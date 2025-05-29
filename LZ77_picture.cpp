@@ -40,9 +40,9 @@ void convertRGBtoYCbCr2(const string& filename, vector<vector<double>>& Y, vecto
 }
 
 struct code_word {
-    int Shift;    // Смещение
-    int Max_Len;  // Максимальная длина
-    char Symbol;  // Следующий символ
+    int Shift;    // Г‘Г¬ГҐГ№ГҐГ­ГЁГҐ
+    int Max_Len;  // ГЊГ ГЄГ±ГЁГ¬Г Г«ГјГ­Г Гї Г¤Г«ГЁГ­Г 
+    char Symbol;  // Г‘Г«ГҐГ¤ГіГѕГ№ГЁГ© Г±ГЁГ¬ГўГ®Г«
 };
 
 vector<code_word> LZ77(string& line) {
@@ -102,7 +102,7 @@ string int_to_binary(int num) {
 }
 
 string char_to_binary(char c) {
-    bitset<8> binary(c);   // 8-количество бит
+    bitset<8> binary(c);   // 8-ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЎГЁГІ
     return binary.to_string();
 }
 
@@ -141,7 +141,7 @@ void convert_component2(vector<vector<double>>& component, string& transformed_c
 
 
 int main() {
-    string filename = "image_1024_145kb.jpg"; // PNG файл
+    string filename = "image_1024_145kb.jpg"; // PNG ГґГ Г©Г«
     vector<vector<double>> Y;
     vector<vector<double>> Cr;
     vector<vector<double>> Cb;
@@ -164,10 +164,6 @@ int main() {
     cout << filename << endl;
     cout << "Time:" << (double)(end - start) / CLOCKS_PER_SEC << endl;
     cout << "Result size " << result.size() << endl;
-    /*
-    for (int i = 0; i < result.size(); ++i) {
-        cout << result[i].Shift << " " << result[i].Max_Len << " " << result[i].Symbol << endl;
-    }*/
     cout << "3" << endl;
     string binaryResult = vector_code_word_to_binary(result);
     //cout << binaryResult << endl;
