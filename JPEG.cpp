@@ -21,7 +21,7 @@ void convertRGBtoYCbCr(const string& filename, vector<vector<double>>& Y, vector
         int height = image.rows;
         int width = image.cols;
 
-        Y.resize(width, vector<double>(height)); // width * height
+        Y.resize(width, vector<double>(height)); 
         Cb.resize(width, vector<double>(height));
         Cr.resize(width, vector<double>(height));
         for (int i = 0; i < height; ++i) {
@@ -58,7 +58,6 @@ void averaging_values(vector<vector<double>>& Y, vector<vector<double>>& Cr, vec
 
 vector<int> zigzag_entry(vector<vector<double>>& block) {
     vector<int> result;
-    // Оставляем только 10 наиболее значимых элементов 
     result.push_back(block[0][0]); result.push_back(block[0][1]); result.push_back(block[1][0]);
     result.push_back(block[0][2]); result.push_back(block[1][1]); result.push_back(block[2][0]);
     result.push_back(block[0][3]); result.push_back(block[1][2]); result.push_back(block[2][1]);
@@ -143,7 +142,7 @@ double C(int& N, int& x, int& y) {
     }
 }
 
-vector<vector<double>> matrixCP(vector<vector<double>>& block) { // Упрощенное ДКП для блока 8*8
+vector<vector<double>> matrixCP(vector<vector<double>>& block) { // Г“ГЇГ°Г®Г№ГҐГ­Г­Г®ГҐ Г„ГЉГЏ Г¤Г«Гї ГЎГ«Г®ГЄГ  8*8
     int width = block.size();
     int height = block[0].size();
 
@@ -193,19 +192,14 @@ void cosine_transform(vector<vector<double>>& Y, vector<vector<double>>& Cr, vec
 
             for (int k = i; k < i + N; ++k) {
                 for (int l = j; l < j + N; ++l) {
-                    int pixel_x = l + l - j;  //j + l
-                    int pixel_y = k + k - i; //i+k 
+                    int pixel_x = l + l - j;  
+                    int pixel_y = k + k - i;
 
                     if (pixel_x < width && pixel_y < height) { // Check boundary condition
                         coefficient_Y[l - j][k - i] = Y[pixel_y][pixel_x];
                         coefficient_Cr[l - j][k - i] = Cr[pixel_y][pixel_x];
                         coefficient_Cb[l - j][k - i] = Cb[pixel_y][pixel_x];
                     }
-                    /*else {
-                        coefficient_Y[l-j][k-i] = 0;  
-                        coefficient_Cr[l-j][k-i] = 128; 
-                        coefficient_Cb[l-j][k-i] = 128;
-                    }*/
 
                 }
             }
@@ -264,12 +258,12 @@ string string_to_ascii_binary(const string& inputString) {
 
 
 int main() {
-    string filename = "image_256_14kb.jpg"; // PNG файл
+    string filename = "image.png"; // PNG ГґГ Г©Г«
     vector<vector<double>> Y;
     vector<vector<double>> Cr;
     vector<vector<double>> Cb;
     clock_t start = clock();
-    // Получаем компоненты YCbCr
+    // ГЏГ®Г«ГіГ·Г ГҐГ¬ ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІГ» YCbCr
     convertRGBtoYCbCr(filename, Y, Cr, Cb);
     cout << "0" << endl;
     averaging_values(Y, Cr, Cb);
