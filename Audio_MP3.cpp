@@ -35,7 +35,7 @@ struct FmtChunk {
 };
 
 struct DataChunk {
-    vector<int16_t> data; // Use vector instead of raw pointer
+    vector<int16_t> data; 
     int nb_of_samples;
 
     DataChunk(int s) : nb_of_samples{ s } {
@@ -51,7 +51,6 @@ struct Node {
     Node* left, * right;
 };
 
-// Function to allocate a new tree node
 Node* getNode(char ch, int freq, Node* left, Node* right)
 {
     Node* node = new Node();
@@ -62,7 +61,6 @@ Node* getNode(char ch, int freq, Node* left, Node* right)
     return node;
 }
 
-// Comparison object to be used to order the heap
 struct comp {
     bool operator()(Node* l, Node* r) {
         return l->freq > r->freq;
@@ -79,7 +77,6 @@ void encode(Node* root, string str, unordered_map<char, string>& huffmanCode) {
     encode(root->right, str + "1", huffmanCode);
 }
 
-// Builds Huffman Tree and decode given input text
 string buildHuffmanTree(string text) {
     unordered_map<char, int> freq;
     for (char ch : text) {
@@ -101,18 +98,10 @@ string buildHuffmanTree(string text) {
     unordered_map<char, string> huffmanCode;
     encode(root, "", huffmanCode);
 
-    //cout << "Huffman Codes are :\n" << '\n';
-    //for (auto pair: huffmanCode) {
-    //	cout << pair.first << " " << pair.second << '\n';
-    //}
-
-    //cout << "\nOriginal string was :\n" << text << '\n';
-
     string str = "";
     for (char ch : text) {
         str += huffmanCode[ch];
     }
-    //cout << str << endl;
     return str;
 }
 
@@ -233,7 +222,6 @@ vector<double> calculateGlobalMaskingThreshold(const vector<double>& dctResult,
         }
     }
 
-    // Нелинейное суммирование
     vector<double> totalMaskingThreshold(dctResult.size());
     for (size_t i = 0; i < dctResult.size(); ++i) {
         totalMaskingThreshold[i] = pow(pow(tonalMaskingThreshold[i], POWER_SUMMATION) + pow(noiseMaskingThreshold[i], POWER_SUMMATION), 1.0 / POWER_SUMMATION);
@@ -253,7 +241,6 @@ void Huffman(string& result, vector<int>& frame) {
 
 
 
-
 int main() {
     constexpr char riff_id[4] = { 'R', 'I', 'F', 'F' };
     constexpr char format[4] = { 'W', 'A', 'V', 'E' };
@@ -266,7 +253,6 @@ int main() {
         return -1;
     }
 
-    // first read RIFF header
     RIFFHeader h;
     ifs.read((char*)(&h), sizeof(h));
     if (!ifs || memcmp(h.chunk_id, riff_id, 4) || memcmp(h.format, format, 4)) {
@@ -277,17 +263,15 @@ int main() {
     cout << "Chank size: " << h.chunk_size << endl;
     cout << "Format: " << h.format << endl;
 
-    // read chunk infos iteratively
     ChunkInfo ch;
     cout << "Chank id: " << ch.chunk_id << endl;
     cout << "Chank size: " << ch.chunk_size << endl;
     bool fmt_read = false;
     bool data_read = false;
-    FmtChunk fmt;  // Declare fmt here to keep it in scope
+    FmtChunk fmt;
 
     while (ifs.read((char*)(&ch), sizeof(ch))) {
 
-        // if fmt chunk?
         if (memcmp(ch.chunk_id, fmt_id, 4) == 0) {
             ifs.read((char*)(&fmt), ch.chunk_size);
             fmt_read = true;
@@ -301,15 +285,13 @@ int main() {
             
 
         }
-        // is data chunk?
         else if (memcmp(ch.chunk_id, data_id, 4) == 0) {
             DataChunk dat_chunk(ch.chunk_size / sizeof(int16_t));
-            ifs.read((char*)dat_chunk.data.data(), ch.chunk_size); // Use vector's data() method
+            ifs.read((char*)dat_chunk.data.data(), ch.chunk_size); 
             data_read = true;
 
             cout << "Number of samples: " << dat_chunk.nb_of_samples << endl;
 
-            // Example: print the first 10 samples
             cout << distance(dat_chunk.data.begin(), max_element(dat_chunk.data.begin(), dat_chunk.data.end())) << endl;
             cout << "First 10 samples: ";
 
@@ -321,8 +303,6 @@ int main() {
             string result = "";
             // Сжатие данных
             for (int i = 0; i < dat_chunk.nb_of_samples; i += 2 * FRAME_SIZE) {
-                //vector<double> frame(dat_chunk.data.begin() + i, dat_chunk.data.begin() + min(i + FRAME_SIZE, dat_chunk.nb_of_samples));
-
                 vector<double> frame = {};
                 for (int j = i; j < min(i + 2 * FRAME_SIZE, dat_chunk.nb_of_samples); j = j + 2) {
                     frame.push_back(dat_chunk.data[j]);
@@ -340,22 +320,6 @@ int main() {
                 // Маскировка
                 vector<double> frequencies = frequency_masking(dctResult, 44100);
 
-                /*
-                // 1. Ищем тональные компоненты
-                double tonalThreshold = 100.0;
-                vector<int> tonalIndices = findTonalComponents(dctResult, tonalThreshold);
-
-                // 2. Вычисляем глобальный порог маскировки
-                vector<double> maskingThreshold = calculateGlobalMaskingThreshold(dctResult, tonalIndices);
-
-
-
-                for (int j = 0; j < 600; ++j) {
-                    cout << maskingThreshold[j] << ", ";
-                }
-                cout << endl;
-                */
-
                 // Квантование
                 int nuber_levels = 256; //65536
                 vector<int> quantizedValues = quantize(frequencies, *max_element(frequencies.begin(), frequencies.end()), *min_element(frequencies.begin(), frequencies.end()), nuber_levels);
@@ -370,7 +334,6 @@ int main() {
                 cout << result[i] << " ";
             }
         }
-        // otherwise skip the chunk
         else {
             ifs.seekg(ch.chunk_size, ios_base::cur);
         }
