@@ -79,13 +79,13 @@ string string_to_ascii_binary1(const string& inputString) {
 
 
 int main() {
-    string filename = "image_256_14kb.jpg"; // PNG файл
+    string filename = "image_256_14kb.jpg"; // PNG ГґГ Г©Г«
 
     vector<vector<double>> Y;
     vector<vector<double>> Cr;
     vector<vector<double>> Cb;
 
-    // Получаем компоненты YCbCr
+    // ГЏГ®Г«ГіГ·Г ГҐГ¬ ГЄГ®Г¬ГЇГ®Г­ГҐГ­ГІГ» YCbCr
     clock_t start = clock();
     convertRGBtoYCbCr1(filename, Y, Cr, Cb);
     cout << "0" << endl;
