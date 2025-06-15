@@ -36,7 +36,7 @@ struct FmtChunk {
 };
 
 struct DataChunk {
-    vector<int16_t> data; // Use vector instead of raw pointer
+    vector<int16_t> data; 
     int nb_of_samples;
 
     DataChunk(int s) : nb_of_samples{ s } {
@@ -44,11 +44,10 @@ struct DataChunk {
     }
 };
 
-
 struct code_word {
-    int Shift;    // Смещение
-    int Max_Len;  // Максимальная длина
-    char Symbol;  // Следующий символ
+    int Shift;    
+    int Max_Len; 
+    char Symbol;  
 };
 
 vector<code_word> LZ77(string& line) {
@@ -56,29 +55,21 @@ vector<code_word> LZ77(string& line) {
     vector<code_word> result = {};
     int len = line.size();
     int current_position = 0;
-
     while (current_position < len) {
         int max_len = 0;
         int shift = 0;
-
         for (int i = max(0, current_position - window_size); i < current_position; ++i) {
             int match_len = 0;
-
             while ((current_position + match_len < len) &&
                 (i + match_len < current_position) &&
                 (line[i + match_len] == line[current_position + match_len])) {
                 match_len++;
             }
-
             if (match_len > max_len) {
                 max_len = match_len;
                 shift = current_position - i;
-
             }
-
         }
-
-
         if (max_len > 0) {
             code_word word;
             word.Shift = shift;
@@ -96,11 +87,8 @@ vector<code_word> LZ77(string& line) {
             current_position++;
         }
     }
-
     return result;
 }
-
-
 
 string int_to_binary(int num) {
     bitset<16> binary(num);
@@ -108,7 +96,7 @@ string int_to_binary(int num) {
 }
 
 string char_to_binary(char c) {
-    bitset<8> binary(c);   // 8-количество бит
+    bitset<8> binary(c);   // 8-ГЄГ®Г«ГЁГ·ГҐГ±ГІГўГ® ГЎГЁГІ
     return binary.to_string();
 }
 
@@ -117,7 +105,6 @@ string code_word_to_binary_string(const code_word& word) {
     binaryStream << int_to_binary(word.Shift);
     binaryStream << int_to_binary(word.Max_Len);
     binaryStream << char_to_binary(word.Symbol);
-
     return binaryStream.str();
 }
 
@@ -128,7 +115,6 @@ string vector_code_word_to_binary(const vector<code_word>& codeWords) {
     }
     return binaryStrings;
 }
-
 
 void convert_data(vector<int16_t>& data, string& transformed_data) {
     int N = data.size();
@@ -153,31 +139,21 @@ int main() {
         cerr << "Cannot open file" << endl;
         return -1;
     }
-
-    // first read RIFF header
     RIFFHeader h;
     ifs.read((char*)(&h), sizeof(h));
     if (!ifs || memcmp(h.chunk_id, riff_id, 4) || memcmp(h.format, format, 4)) {
         cerr << "Bad formatting" << endl;
         return -1;
     }
-
-    // read chunk infos iteratively
     ChunkInfo ch;
-
     bool fmt_read = false;
     bool data_read = false;
-    FmtChunk fmt;  // Declare fmt here to keep it in scope
-
+    FmtChunk fmt; 
     while (ifs.read((char*)(&ch), sizeof(ch))) {
-
-        // if fmt chunk?
         if (memcmp(ch.chunk_id, fmt_id, 4) == 0) {
             ifs.read((char*)(&fmt), ch.chunk_size);
             fmt_read = true;
-
         }
-        // is data chunk?
         else if (memcmp(ch.chunk_id, data_id, 4) == 0) {
             DataChunk dat_chunk(ch.chunk_size / sizeof(int16_t));
             ifs.read((char*)dat_chunk.data.data(), ch.chunk_size); // Use vector's data() method
@@ -212,6 +188,5 @@ int main() {
         cout << "Problem when reading data" << endl;
         return -1;
     }
-
     return 0;
 }
